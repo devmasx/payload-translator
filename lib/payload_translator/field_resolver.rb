@@ -21,7 +21,15 @@ module PayloadTranslator
     end
 
     def resolve_value(payload)
-      payload[config["$field"]]
+      with_formatter do
+        payload[config["$field"]]
+      end
+    end
+
+    def with_formatter
+      return yield unless config["$formatter"]
+      formatter = formatters.fetch(config["$formatter"].to_sym)
+      formatter.call(yield)
     end
 
     def resolve_fnc(payload)

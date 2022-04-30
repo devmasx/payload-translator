@@ -4,10 +4,11 @@ require 'json'
 
 PayloadTranslator.configure do |config|
   config.formatters = {
-    uppercase: ->(value) { value.upcase }
+    uppercase: ->(value) { value.upcase },
+    to_integer: ->(value) { value.to_i },
   }
   config.handlers = {
-    get_name: ->(payload) { payload['name'] }
+    get_name: ->(payload) { payload['name'] },
   }
 end
 
@@ -43,7 +44,7 @@ describe PayloadTranslator::Service do
     let(:context) { "with_map_formatter" }
 
     it '#translate' do
-      expect(subject.translate(input)).to eq("login_type" => "APP", "id": 1)
+      expect(subject.translate(input)).to eq("login_type" => "APP", "id" => 1)
     end
   end
 end
