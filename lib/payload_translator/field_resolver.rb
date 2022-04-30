@@ -7,6 +7,8 @@ class PayloadTranslator::FieldResolver
   def resolve(payload)
     if deep_object?
       resolve_deep_object(payload)
+    elsif config["$fnc"]
+      resolve_fnc(payload)
     elsif config["$map"]
       resolve_map(payload)
     else
@@ -16,6 +18,13 @@ class PayloadTranslator::FieldResolver
 
   def resolve_value(payload)
     payload[config["$field"]]
+  end
+
+  def resolve_fnc(payload)
+    config["$fnc"]
+    handlers = PayloadTranslator.configuration.handlers
+    handler = handlers.fetch(config["$fnc"].to_sym)
+    handler.call(payload)
   end
 
   def resolve_map(payload)
