@@ -43,7 +43,7 @@ describe PayloadTranslator::Service do
     let(:context) { "with_map_formatter" }
 
     it '#translate' do
-      expect(subject.translate(input)).to eq("login_type" => "APP")
+      expect(subject.translate(input)).to eq("login_type" => "APP", "id": 1)
     end
   end
 end

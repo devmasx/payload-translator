@@ -1,4 +1,7 @@
 payload:
+  id:
+    $field: _id
+    $formatter: to_integer
   login_type:
     $field: login_provider
     $map_formatter: uppercase
