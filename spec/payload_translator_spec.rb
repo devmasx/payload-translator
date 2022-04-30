@@ -2,6 +2,16 @@ require 'payload_translator'
 require 'yaml'
 require 'json'
 
+PayloadTranslator.configure do |config|
+  config.formatters = {
+    uppercase: ->(value) { value.upcase },
+    to_integer: ->(value) { value.to_i },
+  }
+  config.handlers = {
+    get_name: ->(payload) { payload['name'] },
+  }
+end
+
 describe PayloadTranslator::Service do
   let(:subject) { PayloadTranslator::Service.new(config) }
   let(:config) { YAML.load_file "./spec/fixtures/#{context}/config.yaml" }
@@ -17,34 +27,24 @@ describe PayloadTranslator::Service do
   context "with $fnc" do
     let(:context) { "with_fnc" }
 
-    let(:subject) {
-      PayloadTranslator.configure do |config|
-        config.handlers = {
-          get_name: ->(payload) { payload['name'] }
-        }
-      end
-      PayloadTranslator::Service.new(config)
-    }
-
     it '#translate' do
-       expect(subject.translate(input)).to eq({"user_name"=>"Jhon Doe"})
+      expect(subject.translate(input)).to eq({"user_name"=>"Jhon Doe"})
     end
   end
 
   context "with depp object" do
     let(:context) { "with_deep_object" }
 
-    let(:subject) {
-      PayloadTranslator.configure do |config|
-        config.handlers = {
-          get_name: ->(payload) { payload['name'] }
-        }
-      end
-      PayloadTranslator::Service.new(config)
-    }
+    it '#translate' do
+      expect(subject.translate(input)).to eq({"user" => {"login"=>{"type"=>"APP"}, "name"=>"Jhon Doe"}})
+    end
+  end
+
+  context "with map formatter" do
+    let(:context) { "with_map_formatter" }
 
     it '#translate' do
-       expect(subject.translate(input)).to eq({"user" => {"login"=>{"type"=>"APP"}, "name"=>"Jhon Doe"}})
+      expect(subject.translate(input)).to eq("login_type" => "APP", "id" => 1)
     end
   end
 end
