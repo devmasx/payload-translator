@@ -18,10 +18,13 @@ module PayloadTranslator
     end
   end
 
-  def self.configure
+  def self.configuration
     @@config ||= Config.new
-    yield(@@config)
-    @@config
+  end
+
+  def self.configure
+    yield(configuration)
+    configuration
   end
 
   VERSION = "0.0.1"
