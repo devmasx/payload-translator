@@ -8,6 +8,7 @@ Example:
 payload:
   id:
     $field: _id
+    $formatter: to_integer
   user_name:
     $field: name
   login_type:
@@ -16,6 +17,8 @@ payload:
       google: GOOGLE
       twitter: TWITTER
       auth0: APP
+  country:
+    $fnc: get_country
 ```
 
 Input:
@@ -45,4 +48,30 @@ Return:
   "user_name": "Jhon Doe",
   "login_type": "APP"
 }
+```
+
+## Configure handlers
+
+Resolve the field output with a custom function.
+
+```ruby
+PayloadTranslator.configure do |config|
+  config.handlers = {
+    get_country: ->(payload) { payload['name'] },
+  }
+end
+
+```
+
+## Configure formatters
+
+Apply different formatters to the output.
+
+```ruby
+PayloadTranslator.configure do |config|
+  config.formatters = {
+    uppercase: ->(value) { value.upcase },
+    to_integer: ->(value) { value.to_i },
+  }
+end
 ```
