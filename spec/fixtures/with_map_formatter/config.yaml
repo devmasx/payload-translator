@@ -1,0 +1,6 @@
+payload:
+  login_type:
+    $field: login_provider
+    $map_formatter: uppercase
+    $map:
+      AUTH0: APP
