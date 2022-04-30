@@ -1,7 +1,10 @@
 module PayloadTranslator
   class FieldResolver
-    attr_reader :config
+    attr_reader :config, :handlers, :formatters
+
     def initialize(field_config)
+      @handlers = PayloadTranslator.configuration.handlers
+      @formatters = PayloadTranslator.configuration.formatters
       @config = field_config
     end
 
@@ -23,7 +26,6 @@ module PayloadTranslator
 
     def resolve_fnc(payload)
       config["$fnc"]
-      handlers = PayloadTranslator.configuration.handlers
       handler = handlers.fetch(config["$fnc"].to_sym)
       handler.call(payload)
     end
@@ -31,6 +33,10 @@ module PayloadTranslator
     def resolve_map(payload)
       value = payload[config["$field"]]
       return config["$default"] unless value
+      if config["$map_formatter"]
+        fotmatter = formatters.fetch(config["$map_formatter"].to_sym)
+        value = fotmatter.call(value)
+      end
 
       config["$map"].fetch(value) { config["$map_default"] }
     end

@@ -1,6 +1,6 @@
 module PayloadTranslator
   class Config
-    attr_reader :handlers
+    attr_reader :handlers, :formatters
     def initialize
       @handlers = {}
       @formatters = {}
