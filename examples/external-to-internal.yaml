@@ -1,0 +1,11 @@
+payload:
+  id:
+    $field: _id
+  user_name:
+    $field: name
+  login_type:
+    $field: login_provider
+    $map:
+      google: GOOGLE
+      twitter: TWITTER
+      auth0: APP
