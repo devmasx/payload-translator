@@ -41,6 +41,14 @@ describe PayloadTranslator::Service do
     end
   end
 
+  context "with multi field" do
+    let(:context) { "with_multi_field" }
+
+    it '#translate' do
+      expect(subject.translate(input)).to eq({"id" => "1"})
+    end
+  end
+
   context "with depp object" do
     let(:context) { "with_deep_object" }
 
