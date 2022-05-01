@@ -38,7 +38,6 @@ module PayloadTranslator
 
     def resolve_map
       value = search_value(fetch_field)
-      return config["$default"] unless value
       if config["$map_formatter"]
         fotmatter = formatters.fetch(config["$map_formatter"].to_sym)
         value = fotmatter.call(value)
@@ -56,9 +55,9 @@ module PayloadTranslator
     def search_value(field_or_fields)
       if field_or_fields.is_a?(Array)
         field = field_or_fields.find { |field| payload[field] }
-        payload[field]
+        payload.fetch(field) { config["$default"] }
       else
-        payload[field_or_fields]
+        payload.fetch(field_or_fields) { config["$default"] }
       end
     end
 
