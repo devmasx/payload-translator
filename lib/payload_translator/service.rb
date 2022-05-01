@@ -25,7 +25,7 @@ module PayloadTranslator
     def fetch_adapter_config(adapter_config_or_name)
       return adapter_config_or_name if adapter_config_or_name.is_a?(Hash)
 
-      PayloadTranslator.configuration.adapters.fetch(adapter_config_or_name)
+      PayloadTranslator.configuration.adapters_configurations.fetch(adapter_config_or_name)
     end
   end
 end

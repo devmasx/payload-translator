@@ -4,7 +4,7 @@ require 'yaml'
 require 'json'
 
 PayloadTranslator.configure do |config|
-  config.adapters = {
+  config.adapters_configurations = {
     internal_to_extenal: {
       "payload" => {
         "id" => { "$field" => "_id" }
