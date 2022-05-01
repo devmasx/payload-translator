@@ -60,7 +60,12 @@ PayloadTranslator.configure do |config|
     get_country: ->(payload) { payload['name'] },
   }
 end
+```
 
+Or per service
+
+```ruby
+PayloadTranslator::Service(config, handlers: get_country: ->(payload) { payload['name'] })
 ```
 
 ## Configure formatters
@@ -74,4 +79,10 @@ PayloadTranslator.configure do |config|
     to_integer: ->(value) { value.to_i },
   }
 end
+```
+
+Or formatter per service
+
+```ruby
+PayloadTranslator::Service(config, formatters: to_integer: ->(value) { value.to_i })
 ```
