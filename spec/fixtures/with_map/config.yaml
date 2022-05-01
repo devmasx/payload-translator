@@ -9,3 +9,6 @@ payload:
       google: GOOGLE
       twitter: TWITTER
       auth0: APP
+  country:
+    $field: country
+    $default: US
