@@ -9,6 +9,7 @@ PayloadTranslator.configure do |config|
   }
   config.handlers = {
     get_name: ->(payload) { payload['name'] },
+    fetch_id: ->(payload) { '_id' }
   }
 end
 
@@ -28,7 +29,15 @@ describe PayloadTranslator::Service do
     let(:context) { "with_fnc" }
 
     it '#translate' do
-      expect(subject.translate(input)).to eq({"user_name"=>"Jhon Doe"})
+      expect(subject.translate(input)).to eq({"user_name"=>"Jhon Doe","id" => "1"})
+    end
+  end
+
+  context "with $field_fnc" do
+    let(:context) { "with_fnc" }
+
+    it '#translate' do
+      expect(subject.translate(input)).to eq({"user_name"=>"Jhon Doe","id" => "1"})
     end
   end
 

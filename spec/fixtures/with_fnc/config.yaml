@@ -1,3 +1,5 @@
 payload:
   user_name:
     $fnc: get_name
+  id:
+    $field_fnc: fetch_id
