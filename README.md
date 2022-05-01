@@ -27,7 +27,7 @@ Input:
 // internal_payload.json
 
 {
-  "_id": "1",
+  "_id": 1,
   "name": "Jhon Doe",
   "login_provider": "auth0"
 }
