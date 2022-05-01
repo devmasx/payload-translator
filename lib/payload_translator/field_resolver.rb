@@ -1,10 +1,11 @@
 module PayloadTranslator
   class FieldResolver
-    attr_reader :config, :handlers, :formatters
+    attr_reader :config, :handlers, :formatters, :configuration
 
-    def initialize(field_config)
-      @handlers = PayloadTranslator.configuration.handlers
-      @formatters = PayloadTranslator.configuration.formatters
+    def initialize(field_config, configuration)
+      @configuration = configuration
+      @handlers = configuration.handlers
+      @formatters = configuration.formatters
       @config = field_config
     end
 
@@ -51,7 +52,7 @@ module PayloadTranslator
 
     def resolve_deep_object(payload)
       config.each_with_object({}) do |(target_name, field_config), result|
-        result[target_name] = FieldResolver.new(field_config).resolve(payload)
+        result[target_name] = FieldResolver.new(field_config, configuration).resolve(payload)
       end
     end
 

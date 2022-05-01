@@ -1,3 +1,4 @@
+require 'pry'
 require 'payload_translator'
 require 'yaml'
 require 'json'
@@ -5,7 +6,6 @@ require 'json'
 PayloadTranslator.configure do |config|
   config.formatters = {
     uppercase: ->(value) { value.upcase },
-    to_integer: ->(value) { value.to_i },
   }
   config.handlers = {
     get_name: ->(payload) { payload['name'] },
@@ -42,6 +42,10 @@ describe PayloadTranslator::Service do
 
   context "with map formatter" do
     let(:context) { "with_map_formatter" }
+    let(:subject) {
+      formatters = { to_integer: ->(value) { value.to_i } }
+      PayloadTranslator::Service.new(config, formatters: formatters)
+    }
 
     it '#translate' do
       expect(subject.translate(input)).to eq("login_type" => "APP", "id" => 1)
