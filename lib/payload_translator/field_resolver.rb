@@ -23,7 +23,7 @@ module PayloadTranslator
 
     def resolve_value(payload)
       with_formatter do
-        payload[config["$field"]]
+        payload[fetch_field(payload)]
       end
     end
 
@@ -40,7 +40,7 @@ module PayloadTranslator
     end
 
     def resolve_map(payload)
-      value = payload[config["$field"]]
+      value = payload[fetch_field(payload)]
       return config["$default"] unless value
       if config["$map_formatter"]
         fotmatter = formatters.fetch(config["$map_formatter"].to_sym)
@@ -53,6 +53,13 @@ module PayloadTranslator
     def resolve_deep_object(payload)
       config.each_with_object({}) do |(target_name, field_config), result|
         result[target_name] = FieldResolver.new(field_config, configuration).resolve(payload)
+      end
+    end
+
+    def fetch_field(payload)
+      config.fetch("$field") do
+        hander = handlers.fetch(config.fetch("$field_fnc").to_sym)
+        hander.call(payload)
       end
     end
 

@@ -9,7 +9,7 @@ PayloadTranslator.configure do |config|
   }
   config.handlers = {
     get_name: ->(payload) { payload['name'] },
-    fetch_id: ->(payload) { payload['_id'] }
+    fetch_id: ->(payload) { '_id' }
   }
 end
 
