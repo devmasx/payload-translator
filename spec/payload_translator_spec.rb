@@ -21,7 +21,7 @@ describe PayloadTranslator::Service do
   context "with $map" do
     let(:context) { "with_map"}
     it '#translate' do
-      expect(subject.translate(input)).to eq({"id"=>"1", "login_type"=>"APP", "user_name"=>"Jhon Doe"})
+      expect(subject.translate(input)).to eq({"id"=>"1", "login_type"=>"APP", "user_name"=>"Jhon Doe", "country" => "US"})
     end
   end
 
