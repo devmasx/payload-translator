@@ -4,6 +4,18 @@ require 'yaml'
 require 'json'
 
 PayloadTranslator.configure do |config|
+  config.adapters_configurations = {
+    internal_to_extenal: {
+      "payload" => {
+        "id" => { "$field" => "_id" }
+      }
+    },
+    extenal_to_internal: {
+      "payload" => {
+        "_id" => { "$field" => "id" }
+      }
+    }
+  }
   config.formatters = {
     uppercase: ->(value) { value.upcase },
   }
@@ -17,6 +29,18 @@ describe PayloadTranslator::Service do
   let(:subject) { PayloadTranslator::Service.new(config) }
   let(:config) { YAML.load_file "./spec/fixtures/#{context}/config.yaml" }
   let(:input) { JSON.parse File.read("./spec/fixtures/#{context}/input.json")}
+
+  context "load adapters" do
+    it '#translate to external' do
+      translator = PayloadTranslator::Service.new(:internal_to_extenal)
+      expect(translator.translate({"_id" => "1234" })).to eq({"id"=>"1234"})
+    end
+
+    it '#translate to internal' do
+      translator = PayloadTranslator::Service.new(:extenal_to_internal)
+      expect(translator.translate({"id" => "1234" })).to eq({"_id"=>"1234"})
+    end
+  end
 
   context "with $map" do
     let(:context) { "with_map"}
