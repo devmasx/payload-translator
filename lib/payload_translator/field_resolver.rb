@@ -1,6 +1,6 @@
 module PayloadTranslator
   class FieldResolver
-    attr_reader :config, :handlers, :formatters, :configuration
+    attr_reader :config, :handlers, :formatters, :configuration, :payload
 
     def initialize(field_config, configuration)
       @configuration = configuration
@@ -10,33 +10,34 @@ module PayloadTranslator
     end
 
     def resolve(payload)
+      @payload = payload
       if deep_object?
-        resolve_deep_object(payload)
+        resolve_deep_object
       elsif config["$fnc"]
-        resolve_fnc(payload)
+        resolve_fnc
       elsif config["$map"]
-        resolve_map(payload)
+        resolve_map
       else
-        resolve_value(payload)
+        resolve_value
       end
     end
 
-    def resolve_value(payload)
+    private
+
+    def resolve_value
       with_formatter do
-        field = fetch_field(payload)
-        search_value(payload, field)
+        search_value(fetch_field)
       end
     end
 
-    def resolve_fnc(payload)
+    def resolve_fnc
       config["$fnc"]
       handler = handlers.fetch(config["$fnc"].to_sym)
       handler.call(payload)
     end
 
-    def resolve_map(payload)
-      field = fetch_field(payload)
-      value = search_value(payload, field)
+    def resolve_map
+      value = search_value(fetch_field)
       return config["$default"] unless value
       if config["$map_formatter"]
         fotmatter = formatters.fetch(config["$map_formatter"].to_sym)
@@ -46,15 +47,13 @@ module PayloadTranslator
       config["$map"].fetch(value) { config["$map_default"] }
     end
 
-    def resolve_deep_object(payload)
+    def resolve_deep_object
       config.each_with_object({}) do |(target_name, field_config), result|
         result[target_name] = FieldResolver.new(field_config, configuration).resolve(payload)
       end
     end
 
-    private
-
-    def search_value(payload, field_or_fields)
+    def search_value(field_or_fields)
       if field_or_fields.is_a?(Array)
         field = field_or_fields.find { |field| payload[field] }
         payload[field]
@@ -69,7 +68,7 @@ module PayloadTranslator
       formatter.call(yield)
     end
 
-    def fetch_field(payload)
+    def fetch_field
       config.fetch("$field") do
         hander = handlers.fetch(config.fetch("$field_fnc").to_sym)
         hander.call(payload)
