@@ -20,8 +20,8 @@ PayloadTranslator.configure do |config|
     uppercase: ->(value) { value.upcase },
   }
   config.handlers = {
-    get_name: ->(payload) { payload['name'] },
-    fetch_id: ->(payload) { '_id' }
+    get_name: ->(payload, field_config) { payload['name'] },
+    fetch_id: ->() { '_id' }
   }
 end
 

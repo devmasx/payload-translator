@@ -31,9 +31,7 @@ module PayloadTranslator
     end
 
     def resolve_fnc
-      config["$fnc"]
-      handler = handlers.fetch(config["$fnc"].to_sym)
-      handler.call(payload)
+      call_fnc(config.fetch("$fnc"))
     end
 
     def resolve_map
@@ -69,8 +67,19 @@ module PayloadTranslator
 
     def fetch_field
       config.fetch("$field") do
-        hander = handlers.fetch(config.fetch("$field_fnc").to_sym)
-        hander.call(payload)
+        call_fnc(config.fetch("$field_fnc"))
+      end
+    end
+
+    def call_fnc(name)
+      handler = handlers.fetch(name.to_sym)
+      case handler.arity
+      when 0
+        handler.call
+      when 1
+        handler.call(payload)
+      when 2
+        handler.call(payload, config)
       end
     end
 
