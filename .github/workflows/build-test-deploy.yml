@@ -1,0 +1,53 @@
+name: Ruby gem
+
+on:
+  push:
+    branches:
+      - "*"
+    tags:
+      - v*
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby_version: ["2.4", "2.5", "2.6"]
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Ruby versions
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+
+      - name: Build
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+          gem install rspec
+      - name: Test
+        run: |
+          rspec
+  deploy:
+    if: contains(github.ref, 'refs/tags/v')
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up Ruby 2.6
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
+      - name: Build
+        run: bundle install --jobs 4 --retry 3
+
+      - name: Publish to RubyGems
+        uses: devmasx/publish-rubygems-action@master
+        env:
+          RUBYGEMS_API_KEY: ${{secrets.RUBYGEMS_API_KEY}}
+          RELEASE_COMMAND: rake release
