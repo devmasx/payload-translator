@@ -1,7 +1,7 @@
-require 'bundler/gem_tasks'
+# require 'bundler/gem_tasks'
 
 task :release do
   system 'rake build'
   system 'git diff --exit-code'
-  # system 'gem push *.gem'
+  system 'gem push *.gem'
 end
