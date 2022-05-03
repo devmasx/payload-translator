@@ -30,6 +30,10 @@ jobs:
       - name: Test
         run: |
           rspec
+      - name: Build
+        run: |
+          rake build
+          git diff --exit-code
   deploy:
     if: contains(github.ref, 'refs/tags/v')
     needs: test
