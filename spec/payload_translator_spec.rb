@@ -73,7 +73,7 @@ describe PayloadTranslator::Service do
     end
   end
 
-  context "with depp object" do
+  context "with deep object" do
     let(:context) { "with_deep_object" }
 
     it '#translate' do

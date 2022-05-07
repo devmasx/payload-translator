@@ -1,7 +1,7 @@
 payload:
   user:
     name:
-      $field: name
+      $field: user.name
     login:
       type:
         $field: login_provider
