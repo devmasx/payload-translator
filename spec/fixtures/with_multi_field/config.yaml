@@ -1,3 +1,5 @@
 payload:
   id:
     $field: [id, _id]
+  user_id:
+    $field: [user.id, customer.id]

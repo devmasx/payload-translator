@@ -69,7 +69,7 @@ describe PayloadTranslator::Service do
     let(:context) { "with_multi_field" }
 
     it '#translate' do
-      expect(subject.translate(input)).to eq({"id" => "1"})
+      expect(subject.translate(input)).to eq({"id" => "1", "user_id" => "1"})
     end
   end
 
