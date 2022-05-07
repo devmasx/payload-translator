@@ -47,6 +47,10 @@ describe PayloadTranslator::Service do
     it '#translate' do
       expect(subject.translate(input)).to eq({"id"=>"1", "login_type"=>"APP", "user_name"=>"Jhon Doe", "country" => "US"})
     end
+
+    it '#translate with empty key' do
+      expect(subject.translate(input.merge({ "login_provider" => "" }))).to eq({"id"=>"1", "login_type"=>"UNKNOWN", "user_name"=>"Jhon Doe", "country" => "US"})
+    end
   end
 
   context "with $fnc" do
