@@ -51,14 +51,7 @@ module PayloadTranslator
     end
 
     def search_value(field_or_fields)
-      if field_or_fields.is_a?(Array)
-        field = field_or_fields.find { |field| payload[field] }
-        payload.fetch(field) { config["$default"] }
-      elsif field_or_fields =~ /\./
-        payload.dig(*field_or_fields.split(".")) || config["$default"]
-      else
-        payload.fetch(field_or_fields) { config["$default"] }
-      end
+      Payload.search_value(payload, field_or_fields, config["$default"])
     end
 
     def with_formatter
