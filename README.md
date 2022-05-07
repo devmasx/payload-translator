@@ -86,3 +86,23 @@ Or formatter per service
 ```ruby
 PayloadTranslator::Service(config, formatters: to_integer: ->(value) { value.to_i })
 ```
+
+## Configure adapters configuration
+
+Store adapter configuration
+
+```ruby
+PayloadTranslator.configure do |config|
+  config.adapters_configurations = {
+    internal_to_extenal: {
+      "payload" => {
+        "id" => { "$field" => "_id" }
+      }
+    }
+  }
+end
+```
+
+```ruby
+translator = PayloadTranslator::Service.new(:internal_to_extenal)
+```
