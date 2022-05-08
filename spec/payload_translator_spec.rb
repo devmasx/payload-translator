@@ -96,4 +96,11 @@ describe PayloadTranslator::Service do
       expect(subject.translate(input)).to eq("login_type" => "APP", "id" => 1)
     end
   end
+
+  context "with array" do
+    let(:context) { "with_array"}
+    it '#translate' do
+      expect(subject.translate(input)).to eq({"addresses" => [{"type" => "shipping", "city" => "City", "state" => "State"}]})
+    end
+  end
 end

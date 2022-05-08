@@ -1,0 +1,8 @@
+payload:
+  addresses:
+  - type:
+      $default: shipping
+    city:
+      $field: shipping.city
+    state:
+      $field: shipping.state

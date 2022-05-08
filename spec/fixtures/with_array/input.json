@@ -1,0 +1,9 @@
+{
+  "shipping": {
+    "street": "Street 1",
+    "city": "City",
+    "state": "State",
+    "country": "Country",
+    "zipCode": "Zip code"
+  }
+}
