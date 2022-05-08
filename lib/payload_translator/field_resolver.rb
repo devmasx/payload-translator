@@ -11,7 +11,9 @@ module PayloadTranslator
 
     def resolve(payload)
       @payload = payload
-      if deep_object?
+      if is_a_array?
+        resolve_array
+      elsif deep_object?
         resolve_deep_object
       elsif config["$fnc"]
         resolve_fnc
@@ -50,6 +52,14 @@ module PayloadTranslator
       end
     end
 
+    def resolve_array
+      [].tap do |result|
+        config.each_with_index do |field_config, index|
+          result[index] = FieldResolver.new(field_config, configuration).resolve(payload)
+        end
+      end
+    end
+
     def search_value(field_or_fields)
       Payload.search_value(payload, field_or_fields, config["$default"])
     end
@@ -76,6 +86,10 @@ module PayloadTranslator
       when 2
         handler.call(payload, config)
       end
+    end
+
+    def is_a_array?
+      config.is_a?(Array)
     end
 
     def deep_object?
