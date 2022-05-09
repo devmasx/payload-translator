@@ -106,3 +106,48 @@ end
 ```ruby
 translator = PayloadTranslator::Service.new(:internal_to_extenal)
 ```
+
+### Complex adapters
+
+Translate all array items, use `$field_for_all_items` special propery of the first elemtn of the array to apply the same translation from the same field
+Config:
+
+```yaml
+payload:
+  countries:
+    - $field_for_all_items: countries
+      name:
+        $field: 'name'
+```
+
+Input:
+
+```json
+{
+  "countries": [
+    {
+      "name": "US",
+      "code": "US_CODE"
+    },
+    {
+      "name": "AU",
+      "code": "AU_CODE"
+    }
+  ]
+}
+```
+
+Result:
+
+```json
+{
+  "countries": [
+    {
+      "name": "US"
+    },
+    {
+      "name": "AU"
+    }
+  ]
+}
+```
