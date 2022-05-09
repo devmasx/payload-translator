@@ -13,3 +13,5 @@ payload:
   country:
     $field: country
     $default: US
+  _type:
+    $default: User

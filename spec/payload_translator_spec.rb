@@ -45,11 +45,11 @@ describe PayloadTranslator::Service do
   context "with $map" do
     let(:context) { "with_map"}
     it '#translate' do
-      expect(subject.translate(input)).to eq({"id"=>"1", "login_type"=>"APP", "user_name"=>"Jhon Doe", "country" => "US"})
+      expect(subject.translate(input)).to eq({"id"=>"1", "login_type"=>"APP", "user_name"=>"Jhon Doe", "country" => "US", "_type" => "User"})
     end
 
     it '#translate with empty key' do
-      expect(subject.translate(input.merge({ "login_provider" => "" }))).to eq({"id"=>"1", "login_type"=>"UNKNOWN", "user_name"=>"Jhon Doe", "country" => "US"})
+      expect(subject.translate(input.merge({ "login_provider" => "" }))).to eq({"id"=>"1", "login_type"=>"UNKNOWN", "user_name"=>"Jhon Doe", "country" => "US", "_type" => "User"})
     end
   end
 

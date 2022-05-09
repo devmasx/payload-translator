@@ -62,6 +62,7 @@ module PayloadTranslator
 
     def fetch_field
       config.fetch("$field") do
+        return config.fetch("$default") unless config["$field_fnc"]
         call_fnc(config.fetch("$field_fnc"))
       end
     end
