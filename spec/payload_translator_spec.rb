@@ -107,5 +107,11 @@ describe PayloadTranslator::Service do
         })
       )
     end
+
+    it '#translate with error' do
+      expect{ subject.translate(input.merge({"countries" => "STRING"}))}.to raise_error(
+        PayloadTranslator::ArrayFieldError
+      )
+    end
   end
 end

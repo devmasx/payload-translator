@@ -1,4 +1,5 @@
 module PayloadTranslator
+  class ArrayFieldError < StandardError; end
   class FieldResolver
     attr_reader :config, :handlers, :formatters, :configuration, :payload
 
@@ -56,6 +57,7 @@ module PayloadTranslator
       @config = config
       [].tap do |result|
         sub_payload = search_value(config["$field_for_all_items"])
+        raise ArrayFieldError.new("Field $field_for_all_items should be an Array an is: #{sub_payload}") unless sub_payload.is_a?(Array)
         sub_payload.map.with_index do |sub_payload_item, index|
           field_config = config.reject{|key| key == "$field_for_all_items"}
           result[index] = FieldResolver.new(field_config, configuration).resolve(sub_payload_item)
