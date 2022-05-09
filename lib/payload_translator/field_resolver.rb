@@ -52,7 +52,20 @@ module PayloadTranslator
       end
     end
 
+    def resolve_array_all_items(config)
+      @config = config
+      [].tap do |result|
+        sub_payload = search_value(config["$field_for_all_items"])
+        sub_payload.map.with_index do |sub_payload_item, index|
+          field_config = config.reject{|key| key == "$field_for_all_items"}
+          result[index] = FieldResolver.new(field_config, configuration).resolve(sub_payload_item)
+        end
+      end
+    end
+
     def resolve_array
+      return resolve_array_all_items(config.first) if config.first["$field_for_all_items"]
+
       [].tap do |result|
         config.each_with_index do |field_config, index|
           result[index] = FieldResolver.new(field_config, configuration).resolve(payload)

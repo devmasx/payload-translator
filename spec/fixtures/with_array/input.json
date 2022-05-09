@@ -1,4 +1,14 @@
 {
+  "countries": [
+    {
+      "name": "US",
+      "code": "US_CODE"
+    },
+    {
+      "name": "AU",
+      "code": "AU_CODE"
+    }
+  ],
   "shipping": {
     "street": "Street 1",
     "city": "City",

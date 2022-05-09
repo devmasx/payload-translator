@@ -1,4 +1,8 @@
 payload:
+  countries:
+  - $field_for_all_items: countries
+    name:
+      $field: "name"
   addresses:
   - type:
       $field: ""

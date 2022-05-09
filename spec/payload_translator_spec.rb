@@ -100,7 +100,12 @@ describe PayloadTranslator::Service do
   context "with array" do
     let(:context) { "with_array"}
     it '#translate' do
-      expect(subject.translate(input)).to eq({"addresses" => [{"type" => "shipping", "city" => "City", "state" => "State"}]})
+      expect(subject.translate(input)).to(
+        eq({
+          "addresses" => [{"city"=>"City", "state"=>"State", "type"=>"shipping"}],
+          "countries" => [{"name" => "US"}, {"name" => "AU"}]
+        })
+      )
     end
   end
 end
