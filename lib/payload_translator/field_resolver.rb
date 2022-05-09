@@ -1,4 +1,5 @@
 module PayloadTranslator
+  class ArrayFieldError < StandardError; end
   class FieldResolver
     attr_reader :config, :handlers, :formatters, :configuration, :payload
 
@@ -11,7 +12,9 @@ module PayloadTranslator
 
     def resolve(payload)
       @payload = payload
-      if deep_object?
+      if is_a_array?
+        resolve_array
+      elsif deep_object?
         resolve_deep_object
       elsif config["$fnc"]
         resolve_fnc
@@ -50,6 +53,28 @@ module PayloadTranslator
       end
     end
 
+    def resolve_array_all_items(config)
+      @config = config
+      [].tap do |result|
+        sub_payload = search_value(config["$field_for_all_items"])
+        raise ArrayFieldError.new("Field $field_for_all_items should be an Array an is: #{sub_payload}") unless sub_payload.is_a?(Array)
+        sub_payload.map.with_index do |sub_payload_item, index|
+          field_config = config.reject{|key| key == "$field_for_all_items"}
+          result[index] = FieldResolver.new(field_config, configuration).resolve(sub_payload_item)
+        end
+      end
+    end
+
+    def resolve_array
+      return resolve_array_all_items(config.first) if config.first["$field_for_all_items"]
+
+      [].tap do |result|
+        config.each_with_index do |field_config, index|
+          result[index] = FieldResolver.new(field_config, configuration).resolve(payload)
+        end
+      end
+    end
+
     def search_value(field_or_fields)
       Payload.search_value(payload, field_or_fields, config["$default"])
     end
@@ -78,6 +103,10 @@ module PayloadTranslator
       when 2
         handler.call(payload, config)
       end
+    end
+
+    def is_a_array?
+      config.is_a?(Array)
     end
 
     def deep_object?

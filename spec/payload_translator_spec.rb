@@ -96,4 +96,22 @@ describe PayloadTranslator::Service do
       expect(subject.translate(input)).to eq("login_type" => "APP", "id" => 1)
     end
   end
+
+  context "with array" do
+    let(:context) { "with_array"}
+    it '#translate' do
+      expect(subject.translate(input)).to(
+        eq({
+          "addresses" => [{"city"=>"City", "state"=>"State", "type"=>"shipping"}],
+          "countries" => [{"name" => "US"}, {"name" => "AU"}]
+        })
+      )
+    end
+
+    it '#translate with error' do
+      expect{ subject.translate(input.merge({"countries" => "STRING"}))}.to raise_error(
+        PayloadTranslator::ArrayFieldError
+      )
+    end
+  end
 end

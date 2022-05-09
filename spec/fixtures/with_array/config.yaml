@@ -1,0 +1,13 @@
+payload:
+  countries:
+  - $field_for_all_items: countries
+    name:
+      $field: "name"
+  addresses:
+  - type:
+      $field: ""
+      $default: shipping
+    city:
+      $field: shipping.city
+    state:
+      $field: shipping.state
