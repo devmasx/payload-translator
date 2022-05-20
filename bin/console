@@ -3,6 +3,25 @@
 
 require 'pry'
 require 'yaml'
+require 'net/http'
+require 'json'
 require_relative '../lib/payload_translator'
+
+PayloadTranslator.configure do |config|
+  config.adapters_configurations = {
+    internal_to_external: {
+      "payload" => {
+        "id" => { "$field" => "_id" },
+        "userId" => { "$field" => "user_id" }
+      }
+    },
+    external_to_internal: {
+      "payload" => {
+        "_id" => { "$field" => "id" },
+        "user_id" => { "$field" => "userId" }
+      }
+    }
+  }
+end
 
 Pry.start

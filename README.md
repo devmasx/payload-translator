@@ -94,7 +94,7 @@ Store adapter configuration
 ```ruby
 PayloadTranslator.configure do |config|
   config.adapters_configurations = {
-    internal_to_extenal: {
+    internal_to_external: {
       "payload" => {
         "id" => { "$field" => "_id" }
       }
@@ -104,7 +104,22 @@ end
 ```
 
 ```ruby
-translator = PayloadTranslator::Service.new(:internal_to_extenal)
+translator = PayloadTranslator::Service.new(:internal_to_external)
+```
+
+### Multiple translator
+
+```ruby
+translator = PayloadTranslator::ServiceMultiple.new([:internal_to_external, :external_to_internal])
+
+translated_response = translator.translate({"user_id" => 4 }) do |translated_payload|
+  response = Net::HTTP.post_form(
+    URI("https://jsonplaceholder.typicode.com/todos"),
+    translated_payload
+  ).body
+
+  JSON.parse(response)
+end
 ```
 
 ### Complex adapters
