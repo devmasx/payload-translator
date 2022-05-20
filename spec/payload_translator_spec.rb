@@ -5,12 +5,12 @@ require 'json'
 
 PayloadTranslator.configure do |config|
   config.adapters_configurations = {
-    internal_to_extenal: {
+    internal_to_external: {
       "payload" => {
         "id" => { "$field" => "_id" }
       }
     },
-    extenal_to_internal: {
+    external_to_internal: {
       "payload" => {
         "_id" => { "$field" => "id" }
       }
@@ -32,12 +32,12 @@ describe PayloadTranslator::Service do
 
   context "load adapters" do
     it '#translate to external' do
-      translator = PayloadTranslator::Service.new(:internal_to_extenal)
+      translator = PayloadTranslator::Service.new(:internal_to_external)
       expect(translator.translate({"_id" => "1234" })).to eq({"id"=>"1234"})
     end
 
     it '#translate to internal' do
-      translator = PayloadTranslator::Service.new(:extenal_to_internal)
+      translator = PayloadTranslator::Service.new(:external_to_internal)
       expect(translator.translate({"id" => "1234" })).to eq({"_id"=>"1234"})
     end
   end
@@ -94,6 +94,17 @@ describe PayloadTranslator::Service do
 
     it '#translate' do
       expect(subject.translate(input)).to eq("login_type" => "APP", "id" => 1)
+    end
+  end
+
+  context "with multiple translations" do
+    it '#translate multiple' do
+      translator = PayloadTranslator::ServiceMultiple.new([:internal_to_external, :external_to_internal])
+      translated_output = translator.translate({"_id" => "1"}) do |translated_input|
+        expect(translated_input).to eq({"id"=>"1"})
+        translated_input
+      end
+      expect(translated_output).to eq({"_id"=>"1"})
     end
   end
 
